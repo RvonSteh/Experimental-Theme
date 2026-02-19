@@ -36,8 +36,8 @@ class NpThemeScript {
                 action: 'create_db_user_data',
                 'user_data': formData
             },
-            success: () => {
-                
+            success: (response) => {
+                console.log(response.data.message)
             },
             error: () => {
 

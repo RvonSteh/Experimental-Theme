@@ -10,13 +10,52 @@ function create_db_user_data()
     $phone = $_POST['user_data']['phone'];
     $username = $_POST['user_data']['username'];
 
-    wp_send_json_success([
-        'message' => 'Etwas ist angekommen',
-        'name' => $name,
-        'email' => $email,
-        'phone' => $phone,
-        'username' => $username
-    ]);
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'my_table';
+
+    $user_exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT username FROM {$table_name} WHERE username = %s LIMIT 1",
+            $username
+        )
+    );
+
+    if ($user_exists > 0) {
+        wp_send_json_success([
+            'message' => 'Benutzer exisiert bereits, bitte neuen Benutzernamen wählen'
+        ]);
+    } else {
+        $inserted = $wpdb->insert(
+            $table_name,
+            [
+                'name'       => $name,
+                'email'      => $email,
+                'phone'      => $phone,
+                'username'   => $username,
+                'created_at' => current_time('mysql')
+            ],
+            [
+                '%s',
+                '%s',
+                '%d',
+                '%s',
+                '%s'
+            ]
+        );
+    }
+
+    if ($inserted === false) {
+        wp_send_json_error(['message' => 'DB Fehler']);
+    } else {
+        wp_send_json_success([
+            'message' => 'Etwas ist angekommen',
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'username' => $username
+        ]);
+    }
 }
 
 
