@@ -63,3 +63,13 @@ function np_acf_load_json($paths)
     $paths[] = NP_THEME_TEMPLATE_PATH . 'inc/acf-json';
     return $paths;
 }
+
+
+
+function my_theme_activated()
+
+{
+    include_once(NP_THEME_TEMPLATE_PATH . 'activate.php');
+}
+
+add_action('after_switch_theme', 'my_theme_activated');

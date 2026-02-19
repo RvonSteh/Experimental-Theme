@@ -12,7 +12,7 @@ function create_db_user_data()
 
 
     global $wpdb;
-    $table_name = $wpdb->prefix . 'my_table';
+    $table_name = $wpdb->prefix . 'np_premium_user';
 
     $user_exists = $wpdb->get_var(
         $wpdb->prepare(

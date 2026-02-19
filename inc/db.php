@@ -1,20 +1,8 @@
 <?php
 defined('ABSPATH') || exit;
 
-
-add_action('after_switch_theme', 'mychild_create_test_table');
-
-function mychild_create_test_table()
+function np_create_premuim_user_table($wpdb, $table_name)
 {
-    $ver = get_option('mychild_my_table_ver');
-    $target = '2.0';
-
-    if ($ver === $target) return;
-
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'my_table';
-
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
     $sql = "CREATE TABLE {$table_name} (
     id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -28,6 +16,4 @@ function mychild_create_test_table()
 
 
     dbDelta($sql);
-
-    update_option('mychild_my_table_ver', $target);
 }
