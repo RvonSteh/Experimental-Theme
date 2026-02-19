@@ -21,6 +21,8 @@ define('HELLO_ELEMENTOR_CHILD_VERSION', '2.0.0');
 
 include_once(NP_THEME_TEMPLATE_PATH . 'inc/helpers.php');
 include_once(NP_THEME_TEMPLATE_PATH . 'inc/shortcodes.php');
+include_once(NP_THEME_TEMPLATE_PATH . 'inc/db.php');
+include_once(NP_THEME_TEMPLATE_PATH . 'inc/requests.php');
 /**
  * Debugging functions
  */
