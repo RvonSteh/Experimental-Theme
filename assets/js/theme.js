@@ -2,6 +2,7 @@ class NpThemeScript {
     constructor() {
         this.$root = document;
         this.$createTableForm = this.$root.querySelectorAll('.create-data-form');
+        this.$body = this.$root.body;
     }
     mount() {
         this.getFormData();
@@ -21,14 +22,14 @@ class NpThemeScript {
                     const label = input.id;
                     formData[label] = value;
                 });
-                this.sendData(formData);
+                this.sendData(form, formData);
             });
         });
 
     }
 
-    sendData(formData) {
-
+    sendData(form, formData) {
+        this.$body.classList.add('-loading');
         jQuery.ajax({
             type: 'POST',
             url: np.ajax_url,
@@ -37,7 +38,17 @@ class NpThemeScript {
                 'user_data': formData
             },
             success: (response) => {
-                console.log(response.data.message)
+                const usernameInput = form.querySelector('input#username');
+                const inputFields = form.querySelectorAll('input');
+                const user_exists = response.data.user_exists;
+                if (user_exists) {
+                    usernameInput.classList.add('error');
+                } else {
+                    inputFields.forEach(input => {
+                        input.value = input.value + ' ✅';
+                    });
+                }
+                this.$body.classList.remove('-loading');
             },
             error: () => {
 

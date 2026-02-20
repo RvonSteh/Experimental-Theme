@@ -13,7 +13,5 @@ function np_create_premuim_user_table($wpdb, $table_name)
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY  (id)
 ) {$wpdb->get_charset_collate()};";
-
-
     dbDelta($sql);
 }

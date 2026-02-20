@@ -1,0 +1,12 @@
+.create-data-form {
+  input.error {
+    border: 1px solid red;
+    color: red;
+  }
+}
+body.-loading {
+  cursor: wait;
+  * {
+    cursor: wait;
+  }
+}

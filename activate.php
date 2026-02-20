@@ -13,8 +13,8 @@ $exists = $wpdb->get_var(
 );
 
 if ($exists === $table_name) {
-    error_log("Tabelle existiert");
+    error_log("Tabelle existiert bereits");
 } else {
-    error_log("Tabelle wurde erstellt");
     np_create_premuim_user_table($wpdb, $table_name);
+    error_log("Tabelle wurde erstellt");
 }

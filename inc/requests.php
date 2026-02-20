@@ -23,7 +23,8 @@ function create_db_user_data()
 
     if ($user_exists > 0) {
         wp_send_json_success([
-            'message' => 'Benutzer exisiert bereits, bitte neuen Benutzernamen wählen'
+            'message' => 'Benutzer exisiert bereits, bitte neuen Benutzernamen wählen',
+            'user_exists' => true
         ]);
     } else {
         $inserted = $wpdb->insert(
