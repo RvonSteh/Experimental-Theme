@@ -21,7 +21,6 @@ define('HELLO_ELEMENTOR_CHILD_VERSION', '2.0.0');
 
 include_once(NP_THEME_TEMPLATE_PATH . 'inc/helpers.php');
 include_once(NP_THEME_TEMPLATE_PATH . 'inc/shortcodes.php');
-include_once(NP_THEME_TEMPLATE_PATH . 'inc/db.php');
 include_once(NP_THEME_TEMPLATE_PATH . 'inc/requests.php');
 /**
  * Debugging functions
@@ -69,7 +68,8 @@ function np_acf_load_json($paths)
 function my_theme_activated()
 
 {
-    include_once(NP_THEME_TEMPLATE_PATH . 'activate.php');
+    include_once(NP_THEME_TEMPLATE_PATH . 'inc/create-db-table.php');
+    np_create_credits_table();
 }
 
 add_action('after_switch_theme', 'my_theme_activated');
