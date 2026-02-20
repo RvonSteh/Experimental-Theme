@@ -11,40 +11,44 @@ function np_create_credits_table()
     $tables = [
         'fsac_credit_accounts' => "CREATE TABLE %s (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(150) NOT NULL,
-            phone VARCHAR(50) DEFAULT NULL,
-            username VARCHAR(100) NOT NULL,
+            user_id BIGINT(20) UNSIGNED NOT NULL,
+            therapist VARCHAR(100) NOT NULL DEFAULT 'perzl',
+            credit_type ENUM('default', 'pet', 'family') NOT NULL,
+            balance VARCHAR(100) NOT NULL,
+            has_abo TINYINT(1) NOT NULL DEFAULT 1,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id)
         ) $charset_collate;",
 
         'fsac_credit_grants' => "CREATE TABLE %s (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(150) NOT NULL,
-            phone VARCHAR(50) DEFAULT NULL,
-            username VARCHAR(100) NOT NULL,
+            user_id BIGINT(20) UNSIGNED NOT NULL,
+            credit_type ENUM('default', 'pet', 'family') NOT NULL,
+            credit_source ENUM('abo', 'single') NOT NULL,
+            total_credits INT DEFAULT 0,
+            expires_at DATE NOT NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id)
         ) $charset_collate;",
 
         'fsac_credit_unlocks' => "CREATE TABLE %s (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(150) NOT NULL,
-            phone VARCHAR(50) DEFAULT NULL,
-            username VARCHAR(100) NOT NULL,
+            user_id BIGINT(20) UNSIGNED NOT NULL,
+            grant_id INT NOT NULL,
+            unlock_at DATE,
+            credits INT DEFAULT 0,
+            unlocked_at DATE,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id)
         ) $charset_collate;",
 
         'fsac_credit_transactions' => "CREATE TABLE %s (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(150) NOT NULL,
-            phone VARCHAR(50) DEFAULT NULL,
-            username VARCHAR(100) NOT NULL,
+            user_id BIGINT(20) UNSIGNED NOT NULL,
+            credit_type ENUM('default', 'pet', 'family'),
+            grant_id INT NOT NULL,
+            action VARCHAR(100),
+            amount VARCHAR(100),
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id)
         ) $charset_collate;",
@@ -53,18 +57,15 @@ function np_create_credits_table()
     foreach ($tables as $suffix => $createSqlTemplate) {
         $table_name = $wpdb->prefix . $suffix;
 
-        $exists = $wpdb->get_var(
-            $wpdb->prepare("SHOW TABLES LIKE %s", $table_name)
-        );
-
-        if ($exists === $table_name) {
-            error_log("Tabelle existiert bereits: $table_name");
-            continue;
-        }
-
         $sql = sprintf($createSqlTemplate, $table_name);
 
         dbDelta($sql);
-        error_log("Tabelle wurde erstellt: $table_name");
+
+        $exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name));
+        if ($exists === $table_name) {
+            error_log("Tabelle geprüft/aktualisiert: $table_name");
+        } else {
+            error_log("Tabelle konnte nicht angelegt werden: $table_name");
+        }
     }
 }
