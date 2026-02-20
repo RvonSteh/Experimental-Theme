@@ -5,58 +5,25 @@ defined('ABSPATH') || exit;
 function create_db_user_data()
 {
 
-    $name = $_POST['user_data']['name'];
-    $email = $_POST['user_data']['email'];
-    $phone = $_POST['user_data']['phone'];
-    $username = $_POST['user_data']['username'];
+    $user_id = get_current_user_id();
+    $therapist = $_POST['user_data']['therapist'];
+    $credit_type = $_POST['user_data']['credit_type'];
+    $balance = $_POST['user_data']['balance'];
+    $has_abo = $_POST['user_data']['balance'];
+    $table_slug = 'fsac_credit_accounts';
 
+    $create_row_data = [
+        'user_id'   => $user_id,
+        'therapist'   => $therapist,
+        'credit_type' => $credit_type,
+        'has_abo'     => $has_abo,
+        'balance'     => $balance
+    ];
+    $reponse_created_row = fsac_ceate_table__rows($table_slug,  $create_row_data);
 
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'np_premium_user';
-
-    $user_exists = $wpdb->get_var(
-        $wpdb->prepare(
-            "SELECT username FROM {$table_name} WHERE username = %s LIMIT 1",
-            $username
-        )
-    );
-
-    if ($user_exists > 0) {
-        wp_send_json_success([
-            'message' => 'Benutzer exisiert bereits, bitte neuen Benutzernamen wählen',
-            'user_exists' => true
-        ]);
-    } else {
-        $inserted = $wpdb->insert(
-            $table_name,
-            [
-                'name'       => $name,
-                'email'      => $email,
-                'phone'      => $phone,
-                'username'   => $username,
-                'created_at' => current_time('mysql')
-            ],
-            [
-                '%s',
-                '%s',
-                '%d',
-                '%s',
-                '%s'
-            ]
-        );
-    }
-
-    if ($inserted === false) {
-        wp_send_json_error(['message' => 'DB Fehler']);
-    } else {
-        wp_send_json_success([
-            'message' => 'Etwas ist angekommen',
-            'name' => $name,
-            'email' => $email,
-            'phone' => $phone,
-            'username' => $username
-        ]);
-    }
+    wp_send_json_success([
+        'message' => $reponse_created_row['message']
+    ]);
 }
 
 

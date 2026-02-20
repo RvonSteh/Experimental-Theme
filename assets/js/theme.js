@@ -11,7 +11,7 @@ class NpThemeScript {
 
         this.$createTableForm.forEach(form => {
             const button = form.querySelector('button');
-            const inputFields = form.querySelectorAll('input');
+            const inputFields = form.querySelectorAll('input, select');
 
             button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -38,17 +38,8 @@ class NpThemeScript {
                 'user_data': formData
             },
             success: (response) => {
-                const usernameInput = form.querySelector('input#username');
-                const inputFields = form.querySelectorAll('input');
-                const user_exists = response.data.user_exists;
-                if (user_exists) {
-                    usernameInput.classList.add('error');
-                } else {
-                    inputFields.forEach(input => {
-                        input.value = input.value + ' ✅';
-                    });
-                }
                 this.$body.classList.remove('-loading');
+                alert(response.data.message);
             },
             error: () => {
 
